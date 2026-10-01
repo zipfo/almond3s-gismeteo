@@ -31,7 +31,10 @@
 REPO="zipfo/almond3s-gismeteo"
 
 # Что обновляем - пути на роутере (= пути в репозитории).
-FILES="etc/almond3s/scripts/weather_fetch.sh usr/libexec/almond3s/ui.uc"
+# netfetch.sh тут не «на всякий случай»: weather_fetch.sh начинается со
+# строки «. /etc/almond3s/scripts/netfetch.sh», и если файла нет, ash роняет
+# весь скрипт (rc=2) - кэш погоды молча перестаёт обновляться по крону.
+FILES="etc/almond3s/scripts/netfetch.sh etc/almond3s/scripts/weather_fetch.sh usr/libexec/almond3s/ui.uc"
 
 WORK="/tmp/almond3s-upd"
 ROOT="${UPDATE_ROOT:-}"

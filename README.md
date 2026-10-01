@@ -6,6 +6,7 @@
 Что внутри
 ----------
   update.sh                      - скрипт обновления (качает файлы)
+  etc/almond3s/scripts/netfetch.sh      - реализация цепочки запросов (curl/wget)
   etc/almond3s/scripts/weather_fetch.sh  - погодный скрипт (с прогнозом)
   usr/libexec/almond3s/ui.uc     - интерфейс ЖК-экрана (строка прогноза,
                                    строка «Ощущается/Влажность/Ветер» и т.д.)
