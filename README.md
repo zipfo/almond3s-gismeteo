@@ -13,7 +13,9 @@
 Как использовать
 -------------------------
   Выполнить команду на роутере (по ssh):
-    curl -fsSL https://raw.githubusercontent.com/zipfo/almond3s-gismeteo/main/update.sh | sh
+```sh
+sh <(wget -O - https://raw.githubusercontent.com/zipfo/almond3s-gismeteo/refs/heads/main/update.sh)
+```
 
 Бэкап и восстановление
 ----------------------
