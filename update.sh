@@ -3,14 +3,13 @@
 # (plain-файлы поштучно, без архивов)
 #
 # Запуск на роутере (нужен интернет, репозиторий должен быть public):
-#   curl -fsSL https://raw.githubusercontent.com/zipfo/almond3s-gismeteo/main/update/update.sh | sh
-# Если репозиторий создан «в корень» (без папки update/):
 #   curl -fsSL https://raw.githubusercontent.com/zipfo/almond3s-gismeteo/main/update.sh | sh
-# Если ветка называется master - подставить master в URL.
+# Ветка - та, что в репозитории по умолчанию (main). Форк с другой веткой:
+#   UPDATE_BASE=https://raw.githubusercontent.com/<owner>/<repo>/<branch> sh update.sh
 #
 # Как ищет файлы: каждый файл пробуется по двум путям - <путь> (файлы в корне
-# репозитория) и update/<путь> (файлы внутри папки update/), и по двум веткам
-# - main, затем master. Работает при любой из двух раскладок репозитория.
+# репозитория) и update/<путь> (файлы внутри папки update/). Работает при любой
+# из двух раскладок репозитория.
 #
 # Бэкап и восстановление:
 #   - ПЕРВЫЙ запуск: перед записью оригинальные файлы роутера копируются
@@ -23,8 +22,8 @@
 #   - без терминала (ответить не на чем) скрипт не гадает и выходит с ошибкой.
 #
 # Тестовые переопределения (обычно не нужны):
-#   UPDATE_BASE=<url>  - база скачивания вместо raw.githubusercontent.com
-#                        (поддерживается file://...)
+#   UPDATE_BASE=<url>  - база скачивания вместо raw.githubusercontent.com/REPO/main
+#                        (ветка, зеркало; поддерживается file://...)
 #   UPDATE_ROOT=<dir>  - ставить файлы в <dir>/... вместо корня /
 #   UPDATE_ANSWER=<r|u> - ответ вместо вопроса (для автоматизации/тестов)
 
@@ -110,11 +109,16 @@ if [ "$HAS_BAK" = 1 ]; then
 fi
 
 # --- базы скачивания ------------------------------------------------------
+# Ветка одна - та, что стоит в репозитории по умолчанию (main). Отдельной
+# запасной ветки НЕ проверяем: raw.githubusercontent.com для несуществующей
+# ветки молча отдаёт ветку по умолчанию, т.е. второй адрес вернул бы тот же
+# самый файл - только лишний запрос на каждом промахе и путаница в логе
+# («откуда скачалось» перестаёт соответствовать ветке). Форк с другой веткой
+# по умолчанию - переопределите UPDATE_BASE.
 if [ -n "$UPDATE_BASE" ]; then
     BASES="$UPDATE_BASE"
 else
-    BASES="https://raw.githubusercontent.com/$REPO/main \
-           https://raw.githubusercontent.com/$REPO/master"
+    BASES="https://raw.githubusercontent.com/$REPO/main"
 fi
 
 rm -rf "$WORK"
@@ -137,7 +141,7 @@ for rel in $FILES; do
     done
     [ -n "$GOT" ] || {
         log "не скачался: $rel"
-        log "  пробовали ветки main/master и пути <путь> / update/<путь>"
+        log "  пробовали ветку main и пути <путь> / update/<путь>"
         log "  (репозиторий создан? он должен быть public?)"
         rm -rf "$WORK"
         exit 1
